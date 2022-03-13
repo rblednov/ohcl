@@ -17,7 +17,7 @@ public class OhlcServiceImpl implements OhlcService {
     }
 
     public Ohlc getCurrent(long instrumentId, OhlcPeriod period) {
-        return null;
+        return quoteService.getCurrent(instrumentId, period);
     }
 
     public List<Ohlc> getHistorical(long instrumentId, OhlcPeriod period) {
