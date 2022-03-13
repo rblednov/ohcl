@@ -18,14 +18,21 @@ public class QuoteServiceImpl implements QuoteService {
         long instrumentId = quote.getInstrumentId();
 
         for (OhlcPeriod period : OhlcPeriod.values()) {
-            String key = OhlcPeriod.M1 + String.valueOf(instrumentId);
-            Ohlc currentOhlc = currentOhclHolder.getOrDefault(key,
-                    Ohlc.builder()
-                            .openPrice(quote.getPrice())
-                            .highPrice(quote.getPrice())
-                            .lowPrice(quote.getPrice())
-                            .closePrice(quote.getPrice())
-                            .build());
+            String key = period + String.valueOf(instrumentId);
+
+            Ohlc currentOhlc = currentOhclHolder.get(key);
+            if(currentOhlc == null){
+                currentOhclHolder.put(key,Ohlc.builder()
+                        .openPrice(quote.getPrice())
+                        .highPrice(quote.getPrice())
+                        .lowPrice(quote.getPrice())
+                        .closePrice(quote.getPrice())
+                        .build());
+                return;
+            }
+            if(samePeriod(period, quote, currentOhlc)){
+
+            }
             double qoutePrice = quote.getPrice();
             double ohlcHighPrice = currentOhlc.getHighPrice();
             double ohlcLowPrice = currentOhlc.getLowPrice();
@@ -36,6 +43,20 @@ public class QuoteServiceImpl implements QuoteService {
                 currentOhlc.setLowPrice(qoutePrice);
             }
             currentOhlc.setClosePrice(qoutePrice);
+        }
+    }
+    /**todo switch case is bad practise, later we can improve it*/
+    public boolean samePeriod(OhlcPeriod period, Quote quote, Ohlc currentOhlc) {
+        switch (period){
+            case D1:
+                return quote.getUtcTimestamp() / (1000 * 60 * 60 * 24) ==
+                        currentOhlc.getPeriodStartUtcTimestamp() / (1000 * 60 * 60 * 24);
+            case H1:
+                return quote.getUtcTimestamp() / (1000 * 60 * 60) ==
+                        currentOhlc.getPeriodStartUtcTimestamp() / (1000 * 60 * 60);
+            case M1:
+                return quote.getUtcTimestamp() / (1000 * 60) ==
+                        currentOhlc.getPeriodStartUtcTimestamp() / (1000 * 60);
         }
     }
 }
