@@ -4,6 +4,9 @@ import org.junit.jupiter.api.Test;
 import ru.rblednov.ohcl.dto.Ohlc;
 import ru.rblednov.ohcl.dto.OhlcPeriod;
 
+import java.util.HashMap;
+import java.util.Map;
+
 public class UtilTest {
     @Test
     public void test() {
@@ -24,6 +27,9 @@ public class UtilTest {
         System.out.println(ohlc1);
         System.out.println(ohlc2);
         System.out.println(ohlc1);
+
+
+        Map<Long, Map<OhlcPeriod, Ohlc>> currentHolder = new HashMap<>();
 
     }
 }

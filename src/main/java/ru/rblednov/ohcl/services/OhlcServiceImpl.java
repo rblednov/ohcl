@@ -4,6 +4,7 @@ import org.springframework.stereotype.Service;
 import ru.rblednov.ohcl.dto.Ohlc;
 import ru.rblednov.ohcl.dto.OhlcPeriod;
 import ru.rblednov.ohcl.dto.Quote;
+import ru.rblednov.ohcl.services.mutex.MutexService;
 import ru.rblednov.ohcl.services.quote.QuoteService;
 
 import java.util.List;
@@ -11,9 +12,11 @@ import java.util.List;
 @Service
 public class OhlcServiceImpl implements OhlcService {
     private final QuoteService quoteService;
+    private final MutexService mutexService;
 
-    public OhlcServiceImpl(QuoteService quoteService) {
+    public OhlcServiceImpl(QuoteService quoteService, MutexService mutexService) {
         this.quoteService = quoteService;
+        this.mutexService = mutexService;
     }
 
     public Ohlc getCurrent(long instrumentId, OhlcPeriod period) {
@@ -29,6 +32,8 @@ public class OhlcServiceImpl implements OhlcService {
     }
 
     public void onQuote(Quote quote) {
-        quoteService.processQuote(quote);
+        synchronized (mutexService.getMutex(quote)) {
+            quoteService.processQuote(quote);
+        }
     }
 }

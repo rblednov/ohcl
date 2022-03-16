@@ -7,7 +7,9 @@ import ru.rblednov.ohcl.dto.Quote;
 public interface CurrentOhlcHolderService {
     void openNewOhcl(Quote quote, OhlcPeriod period);
 
-    Ohlc getOhcl(long key, OhlcPeriod period);
+    Ohlc getOhcl(long instrumentId, OhlcPeriod period);
 
-    void updateCurrentOhlc(OhlcPeriod period, Quote quote, Ohlc currentOhlc);
+    void updateCurrentOhlc(OhlcPeriod period, Quote quote);
+
+    void removeOhlc(long instrumentId, OhlcPeriod period);
 }
