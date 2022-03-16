@@ -40,11 +40,12 @@ public class QuoteServiceImpl implements QuoteService {
             if (currentOhlc == null) {
                 currentOhlcHolderService.openNewOhcl(quote, period);
                 setTimer(quote, period, timerHelperService);
-            } else if (samePeriod(period, quote, currentOhlc)) {
+            } else if (samePeriod(period, quote.getUtcTimestamp(), currentOhlc.getPeriodStartUtcTimestamp())) {
                 currentOhlcHolderService.updateCurrentOhlc(period, quote);
             } else {
                 persistCurrentOhlc(currentOhlc.clone());
                 currentOhlcHolderService.openNewOhcl(quote, period);
+                setTimer(quote, period, timerHelperService);
             }
         }
     }
