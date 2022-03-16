@@ -27,11 +27,12 @@ public class TimerHelperService {
     public void perform(Quote quote, OhlcPeriod period) {
         synchronized (mutexService.getMutex(quote)) {
             Ohlc ohlc = currentOhlcHolderService.getOhcl(quote.getInstrumentId(), period);
-            samePeriod(period, ohlc.get, );
-            if (ohlc!=null){
-                ohlcDao.store(ohlc);
+            if(! samePeriod(period, ohlc.getPeriodStartUtcTimestamp(), System.currentTimeMillis())){
+                if (ohlc!=null){
+                    ohlcDao.store(ohlc);
+                }
+                currentOhlcHolderService.removeOhlc(quote.getInstrumentId(), period);
             }
-            currentOhlcHolderService.removeOhlc(quote.getInstrumentId(), period);
         }
     }
 }
