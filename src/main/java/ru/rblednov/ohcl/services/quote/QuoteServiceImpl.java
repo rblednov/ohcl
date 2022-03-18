@@ -6,7 +6,7 @@ import ru.rblednov.ohcl.dao.OhlcDao;
 import ru.rblednov.ohcl.dto.Ohlc;
 import ru.rblednov.ohcl.dto.OhlcPeriod;
 import ru.rblednov.ohcl.dto.Quote;
-import ru.rblednov.ohcl.services.CurrentOhlcHolderService;
+import ru.rblednov.ohcl.services.current.CurrentOhlcHolderService;
 import ru.rblednov.ohcl.services.TimerHelperService;
 import ru.rblednov.ohcl.services.mutex.QuoteTimerTask;
 
@@ -54,15 +54,19 @@ public class QuoteServiceImpl implements QuoteService {
         Timer timer = new Timer(true);
         TimerTask timerTask = new QuoteTimerTask(quote, period, timerHelperService);
         long delay = 0;
+
+        /** to prevent cases when some qoute was late */
+        long deltaDelay = 100;
+
         switch (period) {
             case M1:
-                delay = 1000 * 60 + 5000;
+                delay = 1000 * 60 + deltaDelay;
                 break;
             case H1:
-                delay = 1000 * 60 * 60 + 5000;
+                delay = 1000 * 60 * 60 + deltaDelay;
                 break;
             case D1:
-                delay = 1000 * 60 * 60 * 24 + 5000;
+                delay = 1000 * 60 * 60 * 24 + deltaDelay;
                 break;
             default:
                 throw new IllegalStateException();

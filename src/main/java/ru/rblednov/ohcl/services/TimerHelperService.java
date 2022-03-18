@@ -5,8 +5,8 @@ import ru.rblednov.ohcl.dao.OhlcDao;
 import ru.rblednov.ohcl.dto.Ohlc;
 import ru.rblednov.ohcl.dto.OhlcPeriod;
 import ru.rblednov.ohcl.dto.Quote;
+import ru.rblednov.ohcl.services.current.CurrentOhlcHolderService;
 import ru.rblednov.ohcl.services.mutex.MutexService;
-import ru.rblednov.ohcl.services.quote.QuoteService;
 
 import static ru.rblednov.ohcl.Utils.samePeriod;
 

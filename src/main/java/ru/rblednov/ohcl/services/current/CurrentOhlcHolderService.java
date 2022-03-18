@@ -1,4 +1,4 @@
-package ru.rblednov.ohcl.services;
+package ru.rblednov.ohcl.services.current;
 
 import ru.rblednov.ohcl.dto.Ohlc;
 import ru.rblednov.ohcl.dto.OhlcPeriod;

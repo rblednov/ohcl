@@ -1,4 +1,4 @@
-package ru.rblednov.ohcl.services;
+package ru.rblednov.ohcl.services.current;
 
 import org.springframework.stereotype.Service;
 import ru.rblednov.ohcl.dto.Ohlc;
@@ -12,7 +12,7 @@ import java.util.Optional;
 import java.util.concurrent.ConcurrentHashMap;
 
 @Service
-public class CurrentOhlcHolderServiceImplConcurrentSimple implements CurrentOhlcHolderService, MutexService {
+public class CurrentOhlcHolderServiceImpl implements CurrentOhlcHolderService, MutexService {
     private final Map<Long, Map<OhlcPeriod, Ohlc>> holder = new ConcurrentHashMap<>();
 
     @Override
