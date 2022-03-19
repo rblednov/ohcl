@@ -1,5 +1,6 @@
 package ru.rblednov.ohcl.integration;
 
+import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -12,8 +13,9 @@ import ru.rblednov.ohcl.dto.Quote;
 import ru.rblednov.ohcl.dto.QuoteDto;
 import ru.rblednov.ohcl.services.OhlcService;
 import ru.rblednov.ohcl.services.OhlcServiceImpl;
-import ru.rblednov.ohcl.services.TimerHelperService;
-import ru.rblednov.ohcl.services.current.CurrentOhlcHolderServiceImpl;
+import ru.rblednov.ohcl.services.timer.TimerHelperServiceImpl;
+import ru.rblednov.ohcl.services.current.CurrentOhlcHolderMutexServiceImpl;
+import ru.rblednov.ohcl.services.historical.HistoricalOhlcHolderServiceImpl;
 import ru.rblednov.ohcl.services.quote.QuoteServiceImpl;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
@@ -22,15 +24,19 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 @Import({OhlcDaoImpl.class,
         OhlcServiceImpl.class,
         QuoteServiceImpl.class,
-        CurrentOhlcHolderServiceImpl.class,
-        TimerHelperService.class})
+        CurrentOhlcHolderMutexServiceImpl.class,
+        TimerHelperServiceImpl.class,
+        HistoricalOhlcHolderServiceImpl.class})
 public class IntegrationTest {
     @Autowired
     OhlcService ohlcService;
+    @AfterEach
+    public void afterEach(){
 
+    }
     @Test
     public void testSimple() {
-        long instrumentId = 3;
+        long instrumentId = 2;
         double price = 120d;
         long timestampUtc = System.currentTimeMillis();
 

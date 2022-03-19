@@ -2,7 +2,7 @@ package ru.rblednov.ohcl.services.mutex;
 
 import ru.rblednov.ohcl.dto.OhlcPeriod;
 import ru.rblednov.ohcl.dto.Quote;
-import ru.rblednov.ohcl.services.TimerHelperService;
+import ru.rblednov.ohcl.services.timer.TimerHelperService;
 
 import java.util.TimerTask;
 

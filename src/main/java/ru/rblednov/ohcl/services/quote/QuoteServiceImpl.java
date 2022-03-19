@@ -7,7 +7,8 @@ import ru.rblednov.ohcl.dto.Ohlc;
 import ru.rblednov.ohcl.dto.OhlcPeriod;
 import ru.rblednov.ohcl.dto.Quote;
 import ru.rblednov.ohcl.services.current.CurrentOhlcHolderService;
-import ru.rblednov.ohcl.services.TimerHelperService;
+import ru.rblednov.ohcl.services.historical.HistoricalOhlcHolderService;
+import ru.rblednov.ohcl.services.timer.TimerHelperService;
 import ru.rblednov.ohcl.services.mutex.QuoteTimerTask;
 
 import java.util.Timer;
@@ -18,16 +19,17 @@ import static ru.rblednov.ohcl.Utils.samePeriod;
 @Slf4j
 @Service
 public class QuoteServiceImpl implements QuoteService {
-    private final OhlcDao ohlcDao;
+
     private final CurrentOhlcHolderService currentOhlcHolderService;
     private final TimerHelperService timerHelperService;
+    private final HistoricalOhlcHolderService historicalOhlcHolder;
 
-    public QuoteServiceImpl(OhlcDao ohlcDao,
-                            CurrentOhlcHolderService currentOhlcHolderService,
-                            TimerHelperService timerHelperService) {
-        this.ohlcDao = ohlcDao;
+    public QuoteServiceImpl(CurrentOhlcHolderService currentOhlcHolderService,
+                            TimerHelperService timerHelperService,
+                            HistoricalOhlcHolderService historicalOhlcHolder) {
         this.currentOhlcHolderService = currentOhlcHolderService;
         this.timerHelperService = timerHelperService;
+        this.historicalOhlcHolder = historicalOhlcHolder;
     }
 
     public void processQuote(Quote quote) {
@@ -86,6 +88,6 @@ public class QuoteServiceImpl implements QuoteService {
      * async
      */
     private void persistCurrentOhlc(Ohlc currentOhlc) {
-        ohlcDao.store(currentOhlc);
+        historicalOhlcHolder.store(currentOhlc);
     }
 }

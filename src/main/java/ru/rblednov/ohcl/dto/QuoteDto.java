@@ -1,8 +1,10 @@
 package ru.rblednov.ohcl.dto;
 
 import lombok.AllArgsConstructor;
+import lombok.ToString;
 
 @AllArgsConstructor
+@ToString
 public class QuoteDto implements Quote {
     private final double price;
     private final long instrumentId;

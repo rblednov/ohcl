@@ -1,7 +1,6 @@
 package ru.rblednov.ohcl.services;
 
 import org.springframework.stereotype.Service;
-import ru.rblednov.ohcl.dao.OhlcDao;
 import ru.rblednov.ohcl.dto.Ohlc;
 import ru.rblednov.ohcl.dto.OhlcPeriod;
 import ru.rblednov.ohcl.dto.Quote;
@@ -16,10 +15,13 @@ import java.util.List;
 public class OhlcServiceImpl implements OhlcService {
     private final QuoteService quoteService;
     private final MutexService mutexService;
-    private CurrentOhlcHolderService currentOhlcHolder;
-    private HistoricalOhlcHolderService historicalOhlcHolder;
+    private final CurrentOhlcHolderService currentOhlcHolder;
+    private final HistoricalOhlcHolderService historicalOhlcHolder;
 
-    public OhlcServiceImpl(QuoteService quoteService, MutexService mutexService, CurrentOhlcHolderService currentOhlcHolder, HistoricalOhlcHolderService historicalOhlcHolder) {
+    public OhlcServiceImpl(QuoteService quoteService,
+                           MutexService mutexService,
+                           CurrentOhlcHolderService currentOhlcHolder,
+                           HistoricalOhlcHolderService historicalOhlcHolder) {
         this.quoteService = quoteService;
         this.mutexService = mutexService;
         this.currentOhlcHolder = currentOhlcHolder;
@@ -31,17 +33,21 @@ public class OhlcServiceImpl implements OhlcService {
     }
 
     public List<Ohlc> getHistorical(long instrumentId, OhlcPeriod period) {
-        return historicalOhlcHolder.getHistorical(instrumentId, period);
+        synchronized (mutexService.getMutex(instrumentId)) {
+            return historicalOhlcHolder.getHistorical(instrumentId, period);
+        }
     }
 
     public List<Ohlc> getHistoricalAndCurrent(long instrumentId, OhlcPeriod period) {
-        List<Ohlc> ohlcList = historicalOhlcHolder.getHistorical(instrumentId, period);
-        ohlcList.add(currentOhlcHolder.getOhcl(instrumentId, period));
-        return ohlcList;
+        synchronized (mutexService.getMutex(instrumentId)) {
+            List<Ohlc> ohlcList = historicalOhlcHolder.getHistorical(instrumentId, period);
+            ohlcList.add(currentOhlcHolder.getOhcl(instrumentId, period));
+            return ohlcList;
+        }
     }
 
     public void onQuote(Quote quote) {
-        synchronized (mutexService.getMutex(quote)) {
+        synchronized (mutexService.getMutex(quote.getInstrumentId())) {
             quoteService.processQuote(quote);
         }
     }

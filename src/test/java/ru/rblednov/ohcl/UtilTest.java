@@ -7,29 +7,27 @@ import ru.rblednov.ohcl.dto.OhlcPeriod;
 import java.util.HashMap;
 import java.util.Map;
 
+import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertTrue;
+
 public class UtilTest {
     @Test
     public void test() {
-//        LocalDateTime localDateTime = LocalDateTime.now();
-//        System.out.println(localDateTime);
-//        System.out.println(localDateTime.getMinute());
-//        System.out.println(Instant.now());
-//        System.out.println(System.currentTimeMillis());
-//        Map<String, List<Integer>> map = new HashMap<>();
-//        List<Integer> list = new ArrayList<>();
-//        list.add(1);
-//        map.put("qwe", list);
-//        map.get("qwe").add(2);
-//        System.out.println(map);
-        Ohlc ohlc1 = new Ohlc(120,150,110,130, OhlcPeriod.M1, System.currentTimeMillis());
-        Ohlc ohlc2 = ohlc1.clone();
-        ohlc2.setHighPrice(170);
-        System.out.println(ohlc1);
-        System.out.println(ohlc2);
-        System.out.println(ohlc1);
 
+        assertTrue(Utils.samePeriod(OhlcPeriod.M1, 815140800000l, 815140800000l));
 
-        Map<Long, Map<OhlcPeriod, Ohlc>> currentHolder = new HashMap<>();
+        assertTrue(Utils.samePeriod(OhlcPeriod.M1, 815140800000l, 815140859000l));
+        assertFalse(Utils.samePeriod(OhlcPeriod.M1, 815140800000l, 815140861000l));
 
+        assertTrue(Utils.samePeriod(OhlcPeriod.H1, 815140800000l, 815140861000l));
+        assertTrue(Utils.samePeriod(OhlcPeriod.D1, 815140800000l, 815140861000l));
+
+        assertTrue(Utils.samePeriod(OhlcPeriod.H1, 815140800000l, 815144399000l));
+        assertFalse(Utils.samePeriod(OhlcPeriod.H1, 815140800000l, 815144400000l));
+        assertTrue(Utils.samePeriod(OhlcPeriod.D1, 815140800000l, 815144400000l));
+
+        assertFalse(Utils.samePeriod(OhlcPeriod.M1, 815140800000l, 815184001000l));
+        assertFalse(Utils.samePeriod(OhlcPeriod.H1, 815140800000l, 815184001000l));
+        assertFalse(Utils.samePeriod(OhlcPeriod.D1, 815140800000l, 815184001000l));
     }
 }

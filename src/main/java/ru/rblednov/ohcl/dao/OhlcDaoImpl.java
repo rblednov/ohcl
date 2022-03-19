@@ -1,5 +1,6 @@
 package ru.rblednov.ohcl.dao;
 
+import lombok.SneakyThrows;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import ru.rblednov.ohcl.dto.Ohlc;
@@ -9,10 +10,15 @@ import java.util.List;
 
 @Slf4j
 @Service
-public class OhlcDaoImpl implements OhlcDao{
+public class OhlcDaoImpl implements OhlcDao {
+    @SneakyThrows
     @Override
     public void store(Ohlc ohlc) {
-        log.info("ohcl stored {}", ohlc);
+        long a = System.nanoTime();
+        while (System.nanoTime() - a < 100) {
+
+        }
+        log.info("ohlc stored {} {}", Thread.currentThread().getName(), ohlc);
     }
 
     @Override

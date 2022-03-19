@@ -7,4 +7,6 @@ import java.util.List;
 
 public interface HistoricalOhlcHolderService {
     List<Ohlc> getHistorical(long instrumentId, OhlcPeriod period);
+
+    void store(Ohlc ohlc);
 }

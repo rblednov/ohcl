@@ -19,4 +19,9 @@ public class HistoricalOhlcHolderServiceImpl implements HistoricalOhlcHolderServ
     public List<Ohlc> getHistorical(long instrumentId, OhlcPeriod period) {
         return ohlcDao.getHistorical(instrumentId, period);
     }
+
+    @Override
+    public void store(Ohlc ohlc) {
+        ohlcDao.store(ohlc);
+    }
 }

@@ -12,7 +12,7 @@ import java.util.Optional;
 import java.util.concurrent.ConcurrentHashMap;
 
 @Service
-public class CurrentOhlcHolderServiceImpl implements CurrentOhlcHolderService, MutexService {
+public class CurrentOhlcHolderMutexServiceImpl implements CurrentOhlcHolderService, MutexService {
     private final Map<Long, Map<OhlcPeriod, Ohlc>> holder = new ConcurrentHashMap<>();
 
     @Override
@@ -20,6 +20,7 @@ public class CurrentOhlcHolderServiceImpl implements CurrentOhlcHolderService, M
         Map<OhlcPeriod, Ohlc> periodOhlcMap =
                 holder.getOrDefault(quote.getInstrumentId(), new HashMap<>());
         periodOhlcMap.put(period, new Ohlc(quote, period));
+        holder.put(quote.getInstrumentId(), periodOhlcMap);
     }
 
     @Override
@@ -45,15 +46,14 @@ public class CurrentOhlcHolderServiceImpl implements CurrentOhlcHolderService, M
     }
 
     @Override
-    public Object getMutex(Quote quote) {
-
-        Map<OhlcPeriod, Ohlc> mutex = holder.get(quote.getInstrumentId());
+    public Object getMutex(long instrumentId) {
+        Map<OhlcPeriod, Ohlc> mutex = holder.get(instrumentId);
         if (mutex == null) {
             synchronized (this) {
-                mutex = holder.get(quote.getInstrumentId());
+                mutex = holder.get(instrumentId);
                 if (mutex == null) {
                     mutex = new HashMap<>();
-                    holder.put(quote.getInstrumentId(), mutex);
+                    holder.put(instrumentId, mutex);
                     return mutex;
                 } else {
                     return mutex;
