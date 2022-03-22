@@ -35,7 +35,6 @@ public class QuoteServiceImpl implements QuoteService {
     public void processQuote(Quote quote) {
         long instrumentId = quote.getInstrumentId();
 
-        /** todo could be parallel*/
         for (OhlcPeriod period : OhlcPeriod.values()) {
 
             Ohlc currentOhlc = currentOhlcHolderService.getOhcl(instrumentId, period);
@@ -62,13 +61,13 @@ public class QuoteServiceImpl implements QuoteService {
 
         switch (period) {
             case M1:
-                delay = 1000 * 60 + deltaDelay;
+                delay = 1000 * 60 + deltaDelay - quote.getUtcTimestamp() % (1000 * 60);
                 break;
             case H1:
-                delay = 1000 * 60 * 60 + deltaDelay;
+                delay = 1000 * 60 * 60 + deltaDelay - quote.getUtcTimestamp() % (1000 * 60 * 60);
                 break;
             case D1:
-                delay = 1000 * 60 * 60 * 24 + deltaDelay;
+                delay = 1000 * 60 * 60 * 24 + deltaDelay - quote.getUtcTimestamp() % (1000 * 60 * 60 * 24);
                 break;
             default:
                 throw new IllegalStateException();
@@ -81,12 +80,6 @@ public class QuoteServiceImpl implements QuoteService {
         return currentOhlcHolderService.getOhcl(instrumentId, period);
     }
 
-    /**
-     * todo make
-     * Transactional
-     * and
-     * async
-     */
     private void persistCurrentOhlc(Ohlc currentOhlc) {
         historicalOhlcHolder.store(currentOhlc);
     }

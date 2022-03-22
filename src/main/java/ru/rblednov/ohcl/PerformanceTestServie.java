@@ -3,6 +3,8 @@ package ru.rblednov.ohcl;
 import lombok.AllArgsConstructor;
 import lombok.SneakyThrows;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.boot.autoconfigure.condition.ConditionalOnBean;
+import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
 import org.springframework.stereotype.Component;
 import ru.rblednov.ohcl.dto.OhlcPeriod;
 import ru.rblednov.ohcl.dto.Quote;
@@ -17,6 +19,7 @@ import java.util.concurrent.Callable;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 
+@ConditionalOnProperty(name = "settings.test", havingValue = "enabled")
 @Component
 @AllArgsConstructor
 @Slf4j

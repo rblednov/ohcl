@@ -17,10 +17,8 @@ public class CurrentOhlcHolderMutexServiceImpl implements CurrentOhlcHolderServi
 
     @Override
     public void openNewOhcl(Quote quote, OhlcPeriod period) {
-        Map<OhlcPeriod, Ohlc> periodOhlcMap =
-                holder.getOrDefault(quote.getInstrumentId(), new HashMap<>());
-        periodOhlcMap.put(period, new Ohlc(quote, period));
-        holder.put(quote.getInstrumentId(), periodOhlcMap);
+        holder.computeIfAbsent(quote.getInstrumentId(), key -> new HashMap<>())
+                .put(period, new Ohlc(quote, period));
     }
 
     @Override
@@ -47,19 +45,6 @@ public class CurrentOhlcHolderMutexServiceImpl implements CurrentOhlcHolderServi
 
     @Override
     public Object getMutex(long instrumentId) {
-        Map<OhlcPeriod, Ohlc> mutex = holder.get(instrumentId);
-        if (mutex == null) {
-            synchronized (this) {
-                mutex = holder.get(instrumentId);
-                if (mutex == null) {
-                    mutex = new HashMap<>();
-                    holder.put(instrumentId, mutex);
-                    return mutex;
-                } else {
-                    return mutex;
-                }
-            }
-        }
-        return mutex;
+        return holder.computeIfAbsent(instrumentId, key -> new HashMap<>());
     }
 }

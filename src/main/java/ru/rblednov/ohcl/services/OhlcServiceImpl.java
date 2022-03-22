@@ -33,6 +33,7 @@ public class OhlcServiceImpl implements OhlcService {
     }
 
     public List<Ohlc> getHistorical(long instrumentId, OhlcPeriod period) {
+        // may be no necessary synchronization , depends on some things
         synchronized (mutexService.getMutex(instrumentId)) {
             return historicalOhlcHolder.getHistorical(instrumentId, period);
         }

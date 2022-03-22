@@ -15,7 +15,6 @@ public class OhlcDaoImpl implements OhlcDao {
     @Override
     public void store(Ohlc ohlc) {
         long a = System.nanoTime();
-//
         Thread.sleep(1);
         log.info("ohlc stored {} {}", Thread.currentThread().getName(), ohlc);
     }
