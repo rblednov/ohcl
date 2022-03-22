@@ -38,7 +38,7 @@ public class PerformanceTestServie {
 
 
             int finalI = i;
-            todo.add(Executors.callable(() -> {
+            executorService.submit(() -> {
                 Quote quote = new QuoteDto(price, instrumentId, timestampUtc);
                 if (finalI % 10001 == 0) {
                     quote = new QuoteDto(120d, 3, timestampUtc);
@@ -51,9 +51,10 @@ public class PerformanceTestServie {
                 }
                 Quote finalQuote = quote;
                 ohlcService.onQuote(finalQuote);
-            }));
+            });
+            Thread.sleep(1);
         }
-        executorService.invokeAll(todo);
+
         long b = System.currentTimeMillis();
         log.info("performance test takes {}ms", b-a);
     }
