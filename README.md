@@ -1,2 +1,2 @@
 # ohcl
-FxPro home work - ohcl trading kata
+FxPro home work - ohlc trading kata
